@@ -1,21 +1,43 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from django.http import HttpResponse
+from .models import * 
+from datetime import datetime
 
 # Create your views here.
 
 def home(request):
-    return render(request, 'blogposts/index.html')
+    all_posts = BlogPost.objects.all
+    year = datetime.now().year
+    context = {"all_posts": all_posts, "year": year}
+    return render(request, 'blogposts/index.html', context)
+
+def post(request, post_id):
+    curr_post = BlogPost.objects.get(id=post_id)
+    year = datetime.now().year
+    context = {"post": curr_post, "year": year}
+    return render(request, 'blogposts/post.html', context)
 
 def login(request):
-    return render(request, 'blogposts/login.html')
+    year = datetime.now().year
+    context = {"year": year}
+    return render(request, 'blogposts/login.html', context)
+
+def logout(request):
+    return redirect(home)
 
 def register(request):
-    return render(request, 'blogposts/register.html')
+    year = datetime.now().year
+    context = {"year": year}
+    return render(request, 'blogposts/register.html', context)
 
 def about(request):
-    return render(request, 'blogposts/about.html')
+    year = datetime.now().year
+    context = {"year": year}
+    return render(request, 'blogposts/about.html', context)
 
 def contact(request):
-    return render(request, 'blogposts/contact.html')
+    year = datetime.now().year
+    context = {"year": year}
+    return render(request, 'blogposts/contact.html', context)
 

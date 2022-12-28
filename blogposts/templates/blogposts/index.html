@@ -7,7 +7,7 @@
       <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto">
           <div class="site-heading">
-            <h1>Angela's Blog</h1>
+            <h1>Amaan's Blog</h1>
             <span class="subheading">A collection of random musings.</span>
           </div>
         </div>
@@ -19,24 +19,19 @@
   <div class="container">
     <div class="row">
       <div class="col-lg-8 col-md-10 mx-auto">
-        All Posts
-        <!-- {% for post in all_posts %} -->
+        {% for post in all_posts %}
         <div class="post-preview">
-          <a href="#">
+          <a href="{% url 'post' post.id %}">
             <h2 class="post-title">
-              Post Title
-              <!-- {{post.title}} -->
+              {{post.title}}
             </h2>
             <h3 class="post-subtitle">
-              Post Subtitle
-              <!-- {{post.subtitle}} -->
+              {{post.subtitle}}
             </h3>
           </a>
           <p class="post-meta">Posted by
-            <a href="#">Author Name</a>
-             on Post Date
-            <!-- on {{post.date}} -->
-          
+            <a href="#">{{post.author.name}}</a>
+            on {{post.date_created}}
             <a href="#">✘</a>
           
           </p>
