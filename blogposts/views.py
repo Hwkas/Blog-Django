@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 
-from django.http import HttpResponse
+from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from .models import * 
 from .forms import *
 from datetime import datetime
@@ -19,6 +21,7 @@ def post(request, post_id):
     context = {"post": curr_post, "year": year}
     return render(request, 'blogposts/post.html', context)
 
+@login_required(login_url="login")
 def create_post(request):
     form = CreatePostForm()
     if request.method == "POST":
@@ -30,6 +33,7 @@ def create_post(request):
     context = {"form": form, "year": year}
     return render(request, 'blogposts/make-post.html', context)
 
+@login_required(login_url="login")
 def edit_post(request, post_id):
     post = BlogPost.objects.get(id=post_id )
     form = CreatePostForm(instance=post)
@@ -42,26 +46,45 @@ def edit_post(request, post_id):
     context = {"form": form, "year": year}
     return render(request, 'blogposts/make-post.html', context)
 
+@login_required(login_url="login")
 def delete_post(request, post_id):
     post = BlogPost.objects.get(id=post_id)
     post.delete()
     return redirect(home)
 
-def login(request):
+def login_page(request):
+    if request.user.is_authenticated:
+        return redirect(home)
+    form = LoginForm()
+    if request.method == "POST":
+        form = LoginForm(request.POST)
+        username = form.data["username"]
+        password = form.data["password"]
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect(home)
+        else:
+            messages.info(request, "Username OR Password is incorrect")   
     year = datetime.now().year
-    context = {"year": year}
+    context = {"form": form, "year": year}
     return render(request, 'blogposts/login.html', context)
 
-def logout(request):
+def logout_page(request):
+    logout(request)
     return redirect(home)
 
 def register(request):
+    if request.user.is_authenticated:
+        return redirect(home)
     form = RegisterForm()
     if request.method == "POST":
         form = RegisterForm(request.POST)
         if form.is_valid():
             form.save()
-        return redirect(home)
+            # username = form.cleaned_data.get("username")
+            # messages.success(request, username + " you account has been created successfully")
+            return redirect(home)
     year = datetime.now().year
     context = {"form": form, "year": year}
     return render(request, 'blogposts/register.html', context)
