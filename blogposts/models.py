@@ -11,7 +11,7 @@ class BlogPost(models.Model):
     body = models.TextField()
     date_created = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
-    
+
     def __str__(self):
         return self.title
 

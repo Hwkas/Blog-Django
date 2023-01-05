@@ -59,7 +59,11 @@
         </div>
       </div>
     </div>
-    {{form.errors}}
+    {% if form.errors %}
+    <div class="alert alert-danger container text-center mt-1" role="alert" , style="width: fit-content;">
+      {{form.errors}}
+    </div>
+    {% endif %}
     <button type="submit" class="btn btn-primary mt-1 mb-5">Register</button>
   </form>
 </div>
