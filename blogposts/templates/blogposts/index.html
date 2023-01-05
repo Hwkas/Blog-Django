@@ -31,7 +31,7 @@
           </h3>
         </a>
         <p class="post-meta">Posted by
-          <a href="#">{{post.author.username}}</a>
+          <a href="#">{{post.author.username.title}}</a>
           on {{post.date_created}}
           <a href="{% url 'delete-post' post.id %}">✘</a>
 
