@@ -20,3 +20,9 @@ class CreatePostForm(ModelForm):
         model = BlogPost
         fields = "__all__"
         exclude = ["author"]
+
+
+class CommentFrom(ModelForm):
+    class Meta:
+        model = Comment
+        fields = ["body"]
