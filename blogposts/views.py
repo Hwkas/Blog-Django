@@ -13,7 +13,7 @@ from .decorators import *
 
 
 def home(request):
-    all_posts = BlogPost.objects.all
+    all_posts = BlogPost.objects.all()
     year = datetime.now().year
     context = {"all_posts": all_posts, "year": year}
     return render(request, 'blogposts/index.html', context)
@@ -21,8 +21,20 @@ def home(request):
 
 def post(request, post_id):
     curr_post = BlogPost.objects.get(id=post_id)
+    commets = curr_post.comment_set.all()
     year = datetime.now().year
-    context = {"post": curr_post, "year": year}
+    form = CommentFrom()
+    if request.method == "POST":
+        form = CommentFrom(request.POST)
+        if form.is_valid:
+            modified_form = form.save(commit=False)
+            user = request.user
+            if user.username != "":
+                modified_form.author = user
+            modified_form.blog = curr_post
+            modified_form.save()
+    context = {"post": curr_post, "comments": commets,
+               "year": year, "form": form}
     return render(request, 'blogposts/post.html', context)
 
 
@@ -44,6 +56,7 @@ def create_post(request):
 
 
 @login_required(login_url="login")
+@ower_only
 def edit_post(request, post_id):
     post = BlogPost.objects.get(id=post_id)
     form = CreatePostForm(instance=post)
@@ -58,6 +71,7 @@ def edit_post(request, post_id):
 
 
 @login_required(login_url="login")
+@ower_only
 def delete_post(request, post_id):
     post = BlogPost.objects.get(id=post_id)
     post.delete()

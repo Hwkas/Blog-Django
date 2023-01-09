@@ -1,5 +1,6 @@
 from django.http import HttpResponse
 from django.shortcuts import redirect
+from .models import BlogPost
 
 
 def unauthenticated_user(func):
@@ -35,4 +36,15 @@ def admin_only(func):
             return redirect("home")
         if group == "customer":
             return func(request, *args, **kwargs)
+    return wrapper
+
+
+def ower_only(func):
+    def wrapper(request, *args, **kwargs):
+        user_id = post = request.user.id
+        post = BlogPost.objects.get(id=kwargs["post_id"])
+        post_author_id = post.author.id
+        if user_id != post_author_id:
+            return HttpResponse("You are not allowed to edit/delete this post!")
+        return func(request, *args, **kwargs)
     return wrapper
